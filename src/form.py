@@ -7,7 +7,7 @@ except:
 
 from search_engine import SearchEngine
 
-class Form(QWidget):
+class Form(QMainWindow):
     def __init__(self, storage, parent=None):
         super(Form, self).__init__(parent)
         self.storage = storage
@@ -19,8 +19,6 @@ class Form(QWidget):
         self.resultTable = QTableWidget()
         self.resultTable.setColumnCount(2)
         self.resultTable.setSelectionBehavior(QAbstractItemView.SelectRows)
-
-        mainLayout = QVBoxLayout()
 
         mainSplitter = QSplitter(Qt.Vertical)
 
@@ -40,13 +38,14 @@ class Form(QWidget):
 
         mainSplitter.addWidget(splitterTop)
         mainSplitter.addWidget(splitterBottom)
-        mainLayout.addWidget(mainSplitter)
 
         self.inputTextEdit.textChanged.connect(self.handleTextChanged)
         self.resultTable.currentItemChanged.connect(self.highlight)
 
-        self.setLayout(mainLayout)
+        self.setCentralWidget(mainSplitter)
         self.setWindowTitle("Search")
+
+        self.statusBar().showMessage("Lol!")
 
     def handleTextChanged(self):
         newText = u" ".join(unicode(self.inputTextEdit.toPlainText()).split())
