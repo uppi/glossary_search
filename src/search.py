@@ -33,6 +33,7 @@ def main():
         try:
             storage.parse_xls(fileName)
         except:
+            raise
             storage.parse_xls(fileName[0])
         storage.make_index()
         form.inputTextEdit.setPlainText("");

@@ -7,8 +7,11 @@ except:
     
 import xlrd, re
 
-class SearchEngine(object):
+class SearchEngine(QObject):
+    statusMessageSent = pyqtSignal(['QString'])
+
     def __init__(self):
+        super(SearchEngine, self).__init__()
         self.dict = {}
         self.regexdict = {}
 
@@ -32,6 +35,7 @@ class SearchEngine(object):
 
     def add_colpair(self, sheet, key_col_num, value_col_num):
         print "add", key_col_num, value_col_num
+        self.statusMessageSent.emit("Adding {0} {1}".format(key_col_num, value_col_num))
         for rownum in range(1, sheet.nrows):
             key = unicode(sheet.row_values(rownum)[key_col_num])
             data = unicode(sheet.row_values(rownum)[value_col_num])
@@ -50,10 +54,14 @@ class SearchEngine(object):
         self.add_colpair(sheet, 9, 8)
         self.add_colpair(sheet, 11, 10)
 
-    def make_index(self):    
+    def make_index(self):
+        count = len(self.dict)
+        done = 0
         print "making index for", len(self.dict), "items"   
         errors = 0
         for key, value in self.dict.iteritems():
+            if done % 200 == 0:
+                self.statusMessageSent.emit("Compiled {0} of {1} messages ({2}%)".format(done, count, (100 * done) / count))
             regex = None
             try:
                 regex = self.make_regex(value)
@@ -63,7 +71,9 @@ class SearchEngine(object):
                 pass
             if regex:
                 self.regexdict[key] = regex
+            done += 1
         print errors
+        self.statusMessageSent.emit("Done. Errors count: " + str(errors))
 
     def search(self, text):
         result = {}

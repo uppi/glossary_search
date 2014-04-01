@@ -11,6 +11,7 @@ class Form(QMainWindow):
     def __init__(self, storage, parent=None):
         super(Form, self).__init__(parent)
         self.storage = storage
+        self.storage.statusMessageSent.connect(self.showStatusMessage)
         self.curPlainText = ""
 
         inputLabel = QLabel("Input:")
@@ -45,7 +46,7 @@ class Form(QMainWindow):
         self.setCentralWidget(mainSplitter)
         self.setWindowTitle("Search")
 
-        self.statusBar().showMessage("Lol!")
+        self.statusBar().showMessage("")
 
     def handleTextChanged(self):
         newText = u" ".join(unicode(self.inputTextEdit.toPlainText()).split())
@@ -63,6 +64,10 @@ class Form(QMainWindow):
         for row in xrange(0, len(searchResult)):
             self.resultTable.setItem(row, 0, QTableWidgetItem(searchResult[row][0]))
             self.resultTable.setItem(row, 1, QTableWidgetItem(searchResult[row][1]))
+
+    def showStatusMessage(self, message):
+        self.statusBar().showMessage(message)
+        QApplication.processEvents()
 
     def highlight(self, cur, prev):
         value_selected = self.resultTable.item(self.resultTable.currentRow(), 1).text()
