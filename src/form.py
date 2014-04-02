@@ -74,13 +74,14 @@ class Form(QMainWindow):
         searchResult = []
         for key, value in sr.iteritems():
             rich_regex = SearchMethod.make_regex(value, True)
-            #print "value", value
-            #print "pattern", rich_regex.pattern
-            self.foundMatchObjects[key] = [x.group(0) for x in rich_regex.finditer(text)]
             maxlen_val = ""
-            for x in self.foundMatchObjects[key]:
-                if len(x) > len(maxlen_val):
-                    maxlen_val = x
+            if rich_regex:
+                self.foundMatchObjects[key] = [x.group(0) for x in rich_regex.finditer(text)]
+                for x in self.foundMatchObjects[key]:
+                    if len(x) > len(maxlen_val):
+                        maxlen_val = x
+            else:
+                self.foundMatchObjects[key] = []
             searchResult += [(key, value, maxlen_val)]
 
         searchResult = sorted(searchResult, cmp = lambda x, y : len(y[2]) - len(x[2]))

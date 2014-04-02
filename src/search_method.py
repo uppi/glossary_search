@@ -26,7 +26,7 @@ class DefaultSearch(object):
         return None
 
 class MorphSearch(object):
-    ending_rxstring = u"|".join([u"(:?{0})".format(x) for x in korean.noun_endings])
+    ending_rxstring = u"|".join([u"(?:{0})".format(x) for x in korean.noun_endings])
     ending_rxstring_fin = u"{0}$".format(ending_rxstring)
     ending_rxstring_rich = u"({0})?".format(ending_rxstring)
     ending_regexp = re.compile(ending_rxstring_fin)
