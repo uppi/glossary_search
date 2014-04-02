@@ -7,7 +7,7 @@ except:
     from PyQt5.QtCore import *
     from PyQt5.QtWidgets import *
 
-from glossary import Glossary
+from search_method import MorphSearch as SearchMethod
 
 class Form(QMainWindow):
     def __init__(self, glossary, parent=None):
@@ -20,10 +20,10 @@ class Form(QMainWindow):
         self.inputTextEdit = QTextEdit()
         resultLabel = QLabel("Results:")
         self.resultTable = QTableWidget()
-        self.resultTable.setColumnCount(2)
+        self.resultTable.setColumnCount(3)
         self.resultTable.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.resultTable.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.resultTable.setHorizontalHeaderLabels(["Translation", "Foreign word"])
+        self.resultTable.setHorizontalHeaderLabels(["Translation", "Foreign word", "Matched"])
 
         mainSplitter = QSplitter(Qt.Vertical)
 
@@ -54,7 +54,7 @@ class Form(QMainWindow):
 
         dw = QDesktopWidget()
         screenSize = dw.availableGeometry(self)
-        self.setFixedSize(QSize(screenSize.width() * 0.5, screenSize.height() * 0.5))
+        self.setMinimumSize(QSize(screenSize.width() * 0.4, screenSize.height() * 0.3))
 
 
 
@@ -67,14 +67,31 @@ class Form(QMainWindow):
             pass
  
     def search(self):
-        searchResult = self.glossary.search(
-            unicode(self.inputTextEdit.toPlainText())).items()
-        searchResult = sorted(searchResult, cmp = lambda x, y : len(y[1]) - len(x[1]))
+        text = unicode(self.inputTextEdit.toPlainText())
+        sr = self.glossary.search(text)
+
+        self.foundMatchObjects = {}
+        searchResult = []
+        for key, value in sr.iteritems():
+            rich_regex = SearchMethod.make_regex(value, True)
+            #print "value", value
+            #print "pattern", rich_regex.pattern
+            self.foundMatchObjects[key] = [x.group(0) for x in rich_regex.finditer(text)]
+            maxlen_val = ""
+            for x in self.foundMatchObjects[key]:
+                if len(x) > len(maxlen_val):
+                    maxlen_val = x
+            searchResult += [(key, value, maxlen_val)]
+
+        searchResult = sorted(searchResult, cmp = lambda x, y : len(y[2]) - len(x[2]))
+
         self.resultTable.setRowCount(len(searchResult))
         for row in xrange(0, len(searchResult)):
             self.resultTable.setItem(row, 0, QTableWidgetItem(searchResult[row][0]))
             self.resultTable.setItem(row, 1, QTableWidgetItem(searchResult[row][1]))
+            self.resultTable.setItem(row, 2, QTableWidgetItem(searchResult[row][2]))
         self.resultTable.resizeColumnsToContents()
+
 
     def showStatusMessage(self, message):
         self.statusBar().showMessage(message)
@@ -84,7 +101,7 @@ class Form(QMainWindow):
         value_selected = self.resultTable.item(self.resultTable.currentRow(), 1).text()
         text = self.inputTextEdit.toPlainText()
         try:
-            regex = Glossary.make_regex(value_selected, True)
+            regex = SearchMethod.make_regex(value_selected, True)
             mo = regex.search(text)
             if mo:
                 highlightedText = text[mo.start(0):mo.end(0)]

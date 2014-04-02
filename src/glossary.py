@@ -8,6 +8,7 @@ except:
     from PyQt5.QtWidgets import *
     
 import xlrd, re
+from search_method import MorphSearch as SearchMethod
 
 class Glossary(QObject):
     statusMessageSent = pyqtSignal(['QString'])
@@ -16,24 +17,6 @@ class Glossary(QObject):
         super(Glossary, self).__init__()
         self.dict = {}
         self.regexdict = {}
-
-    @staticmethod
-    def make_one_word_regex_part(word, rich=False):
-        result = "(?:(?:^)|[ .+-])" + re.escape(word)
-        if len(word) != 1:
-            result += "?"
-        if rich:
-            return "(" + result + "[^ ]?" + ")"
-        else:
-            return result + "[^ ]?"
-
-    @staticmethod
-    def make_regex(value, rich=False):
-        value = unicode(value)
-        words = value.split()
-        if words:
-            return re.compile(u' *'.join(Glossary.make_one_word_regex_part(word, rich) for word in words), re.U) 
-        return None
 
     def add_colpair(self, sheet, key_col_num, value_col_num):
         print "add", key_col_num, value_col_num
@@ -67,9 +50,9 @@ class Glossary(QObject):
                 self.statusMessageSent.emit("Compiled {0} of {1} messages ({2}%)".format(done, count, (100 * done) / count))
             regex = None
             try:
-                regex = self.make_regex(value)
+                regex = SearchMethod.make_regex(value)
             except Exception as e:
-                print str(e)
+                print value, str(e)
                 errors += 1
                 pass
             if regex:
@@ -80,6 +63,7 @@ class Glossary(QObject):
 
     def search(self, text):
         result = {}
+        text = SearchMethod.prepare_text(text)
         for key, regex in self.regexdict.iteritems():
             if regex.search(text):
                 result[key] = self.dict[key]
