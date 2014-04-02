@@ -13,7 +13,7 @@ from form import Form
 from glossary import Glossary
 
 def main():
-    import sys
+    import sys, traceback
     app = QApplication(sys.argv)
     parent = QDialog()
  
@@ -40,7 +40,7 @@ def main():
             form.inputTextEdit.setDisabled(False);
         sys.exit(app.exec_())
     except Exception as e:
-        QMessageBox.critical(parent, "Error", "Exception thrown: " + str(e))
+        QMessageBox.critical(parent, "Error", traceback.format_exc())
         sys.exit(app.quit())
 
 if __name__ == '__main__':
