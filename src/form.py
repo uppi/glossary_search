@@ -20,6 +20,8 @@ class Form(QMainWindow):
         self.resultTable = QTableWidget()
         self.resultTable.setColumnCount(2)
         self.resultTable.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.resultTable.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.resultTable.setHorizontalHeaderLabels(["Translation", "Foreign word"])
 
         mainSplitter = QSplitter(Qt.Vertical)
 
@@ -48,6 +50,12 @@ class Form(QMainWindow):
 
         self.statusBar().showMessage("")
 
+        dw = QDesktopWidget()
+        screenSize = dw.availableGeometry(self)
+        self.setFixedSize(QSize(screenSize.width() * 0.5, screenSize.height() * 0.5))
+
+
+
     def handleTextChanged(self):
         newText = u" ".join(unicode(self.inputTextEdit.toPlainText()).split())
         if self.curPlainText != newText:
@@ -64,6 +72,7 @@ class Form(QMainWindow):
         for row in xrange(0, len(searchResult)):
             self.resultTable.setItem(row, 0, QTableWidgetItem(searchResult[row][0]))
             self.resultTable.setItem(row, 1, QTableWidgetItem(searchResult[row][1]))
+        self.resultTable.resizeColumnsToContents()
 
     def showStatusMessage(self, message):
         self.statusBar().showMessage(message)
