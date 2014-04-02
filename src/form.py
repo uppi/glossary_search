@@ -7,13 +7,13 @@ except:
     from PyQt5.QtCore import *
     from PyQt5.QtWidgets import *
 
-from search_engine import SearchEngine
+from glossary import Glossary
 
 class Form(QMainWindow):
-    def __init__(self, storage, parent=None):
+    def __init__(self, glossary, parent=None):
         super(Form, self).__init__(parent)
-        self.storage = storage
-        self.storage.statusMessageSent.connect(self.showStatusMessage)
+        self.glossary = glossary
+        self.glossary.statusMessageSent.connect(self.showStatusMessage)
         self.curPlainText = ""
 
         inputLabel = QLabel("Input:")
@@ -67,7 +67,7 @@ class Form(QMainWindow):
             pass
  
     def search(self):
-        searchResult = self.storage.search(
+        searchResult = self.glossary.search(
             unicode(self.inputTextEdit.toPlainText())).items()
         searchResult = sorted(searchResult, cmp = lambda x, y : len(y[1]) - len(x[1]))
         self.resultTable.setRowCount(len(searchResult))
@@ -84,7 +84,7 @@ class Form(QMainWindow):
         value_selected = self.resultTable.item(self.resultTable.currentRow(), 1).text()
         text = self.inputTextEdit.toPlainText()
         try:
-            regex = SearchEngine.make_regex(value_selected, True)
+            regex = Glossary.make_regex(value_selected, True)
             mo = regex.search(text)
             if mo:
                 highlightedText = text[mo.start(0):mo.end(0)]

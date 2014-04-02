@@ -10,16 +10,16 @@ except:
 import xlrd, re
 
 from form import Form
-from search_engine import SearchEngine
+from glossary import Glossary
 
 def main():
     import sys
 
-    storage = SearchEngine()
+    glossary = Glossary()
  
     app = QApplication(sys.argv)
  
-    form = Form(storage)
+    form = Form(glossary)
     form.show()
 
     form.inputTextEdit.setDisabled(True);
@@ -32,11 +32,10 @@ def main():
         fileName = QFileDialog.getOpenFileName(form, "Open glossary", ".", "glossary (*.xls)");
     try:
         try:
-            storage.parse_xls(fileName)
+            glossary.parse_xls(fileName)
         except:
-            raise
-            storage.parse_xls(fileName[0])
-        storage.make_index()
+            glossary.parse_xls(fileName[0])
+        glossary.make_index()
         form.inputTextEdit.setPlainText("");
         form.inputTextEdit.setDisabled(False);
     except Exception as e:

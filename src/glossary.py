@@ -9,11 +9,11 @@ except:
     
 import xlrd, re
 
-class SearchEngine(QObject):
+class Glossary(QObject):
     statusMessageSent = pyqtSignal(['QString'])
 
     def __init__(self):
-        super(SearchEngine, self).__init__()
+        super(Glossary, self).__init__()
         self.dict = {}
         self.regexdict = {}
 
@@ -32,7 +32,7 @@ class SearchEngine(QObject):
         value = unicode(value)
         words = value.split()
         if words:
-            return re.compile(u' *'.join(SearchEngine.make_one_word_regex_part(word, rich) for word in words), re.U) 
+            return re.compile(u' *'.join(Glossary.make_one_word_regex_part(word, rich) for word in words), re.U) 
         return None
 
     def add_colpair(self, sheet, key_col_num, value_col_num):
@@ -50,6 +50,7 @@ class SearchEngine(QObject):
     def parse_xls(self, path):
         rb = xlrd.open_workbook(path)
         sheet = rb.sheet_by_index(0)
+        #hardcode
         self.add_colpair(sheet, 3, 2)
         self.add_colpair(sheet, 5, 4)
         self.add_colpair(sheet, 7, 6)
