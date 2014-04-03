@@ -6,7 +6,8 @@ try:
 except:
     from PyQt5.QtCore import *
     from PyQt5.QtWidgets import *
-import re, korean
+import traceback, re
+import korean
 
 class DefaultSearch(object):
     @staticmethod
@@ -43,9 +44,11 @@ class MorphSearch(object):
 
     @staticmethod
     def remove_ending(word):
-        word = word.replace("+", ".")
-        word = word.replace(")", ".")
-        word = word.replace("(", ".")
+        word = word.replace("+", " ")
+        word = word.replace(")", " ")
+        word = word.replace("(", " ")
+        word = word.replace("*", " ")
+        word = word.replace(".", " ")
         mo = MorphSearch.ending_regexp.search(word)
         if not mo:
             return word
@@ -58,25 +61,24 @@ class MorphSearch(object):
 
     @staticmethod
     def make_regex(value, rich=False):
-        #print "Making"
         prepared = MorphSearch.prepare_text(unicode(value))
-        #print "Prepared:", prepared
         if prepared:
             try:
                 if not rich:
                     return re.compile(prepared, re.U)
                 else:
-                    print "Rich."
                     value = unicode(value)
                     words = [MorphSearch.remove_ending(word) + MorphSearch.ending_rxstring_rich for word in value.split()]
+                    pattern = u" +".join(words)
                     try:
-                        return re.compile(u" +".join(words))
+                        return re.compile(pattern)
                     except Exception as e:
-                        print str(e)
-                        print value
+                        print "rich pattern:", pattern
+                        traceback.print_exc()
                         return None
             except Exception as e:
-                print str(e)
+                print "prepared text:", prepared
+                traceback.print_exc()
                 return None
         return None
 
