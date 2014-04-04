@@ -24,9 +24,10 @@ class Glossary(QObject):
             key = unicode(sheet.row_values(rownum)[key_col_num])
             data = unicode(sheet.row_values(rownum)[value_col_num])
             if not key and data:
-                key = "no_data_col_" + str(key_col_num) + "_row_" + str(rownum)
-            if key in self.dict and self.dict[key] != data:
-                key = key + "_col_" + str(key_col_num) + "_row_" + str(rownum)
+                key = u"no_data_col_" + str(key_col_num) + u"_row_" + str(rownum)
+            elif key in self.dict and SearchMethod.prepare_text(self.dict[key]) != SearchMethod.prepare_text(data):
+                #print u"{0}: \n{1} != \n{2}".format(key, self.dict[key], data)
+                key = key + u"_col_" + str(key_col_num) + u"_row_" + str(rownum)
             self.dict[key] = data
 
     def parse_xls(self, path):
