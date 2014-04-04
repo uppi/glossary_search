@@ -59,7 +59,6 @@ class SearchEngine(QObject):
     def make_index(self):
         count = len(self.dict)
         done = 0
-        print "making index for", len(self.dict), "items"   
         errors = 0
         for key, value in self.dict.iteritems():
             if done % 200 == 0:

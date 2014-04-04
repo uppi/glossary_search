@@ -73,6 +73,7 @@ class Form(QMainWindow):
         searchResult = []
         for key, value in sr.iteritems():
             rich_regex = SearchMethod.make_regex(value, True)
+
             maxlen_val = ""
             if rich_regex:
                 self.foundMatchObjects[key] = [x.group(0) for x in rich_regex.finditer(text)]
@@ -80,6 +81,7 @@ class Form(QMainWindow):
                     if len(x) > len(maxlen_val):
                         maxlen_val = x
             else:
+                print "regex failed"
                 self.foundMatchObjects[key] = []
             searchResult += [(key, value, maxlen_val)]
 
@@ -124,7 +126,7 @@ class Form(QMainWindow):
             fileName = QFileDialog.getOpenFileName(self, "Open glossary", ".", "glossary (*.xls *.xlsx)");
         if not fileName:
             raise Exception("You need to choose glossary file")
-        if fileName is tuple:
+        if isinstance(fileName, tuple):
             fileName = fileName[0]
         self.showStatusMessage("Parsing glossary file " + fileName)
         self.glossary.parse_xls(fileName)

@@ -34,7 +34,7 @@ class DefaultSearch(object):
 
 class MorphSearch(object):
     ending_rxstring = u"|".join([u"(?:{0})".format(x) for x in korean.noun_endings])
-    ending_rxstring_fin = u"{0}$".format(ending_rxstring)
+    ending_rxstring_fin = u"(?:{0})$".format(ending_rxstring)
     ending_rxstring_rich = u"({0})?".format(ending_rxstring)
     ending_regexp = re.compile(ending_rxstring_fin)
 
@@ -81,6 +81,11 @@ class MorphSearch(object):
         return None
 
 if __name__ == "__main__":
-    text = u"홀든은 자신의 임무는 끝났다고 말하며 셰넌에게 돌아가라고 말했다. 말하는 섬 마을 기초훈련장 앞에 있는 셰넌에게 돌아가 보고하자.\n"
+    text = u"자이언트 윈디마"
     print text
-    print MorphSearch.prepare_text(text)
+    print "prepared:", MorphSearch.prepare_text(text)
+    print "rich:", MorphSearch.make_regex(text, True).pattern
+
+
+    #자이언((?:가)|(?:와)|(?:의)|(?:어게)|(?:는)|(?:께서)|(?:한테서)|(?:석)|(?:계)|(?:을)|(?:씨)|(?:은)|(?:아)|(?:께)|(?:에)|(?:님)|(?:한테)|(?:로)|(?:과)|(?:으로)|(?:에게서)|(?:여)|(?:에서)|(?:를)|(?:이)|(?:야))? +윈디마((?:가)|(?:와)|(?:의)|(?:어게)|(?:는)|(?:께서)|(?:한테서)|(?:석)|(?:계)|(?:을)|(?:씨)|(?:은)|(?:아)|(?:께)|(?:에)|(?:님)|(?:한테)|(?:로)|(?:과)|(?:으로)|(?:에게서)|(?:여)|(?:에서)|(?:를)|(?:이)|(?:야))?
+

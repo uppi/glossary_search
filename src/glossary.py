@@ -19,7 +19,6 @@ class Glossary(QObject):
         self.regexdict = {}
 
     def add_colpair(self, sheet, key_col_num, value_col_num):
-        print "add", key_col_num, value_col_num
         self.statusMessageSent.emit("Adding {0} {1}".format(key_col_num, value_col_num))
         for rownum in range(1, sheet.nrows):
             key = unicode(sheet.row_values(rownum)[key_col_num])
@@ -39,7 +38,6 @@ class Glossary(QObject):
     def make_index(self):
         count = len(self.dict)
         done = 0
-        print "making index for", len(self.dict), "items"   
         errors = 0
         for key, value in self.dict.iteritems():
             if done % 200 == 0:
@@ -52,8 +50,9 @@ class Glossary(QObject):
                 pass
             if regex:
                 self.regexdict[key] = regex
+            else:
+                errors += 1
             done += 1
-        print errors
         self.statusMessageSent.emit("Done. Errors count: " + str(errors))
 
     def search(self, text):
