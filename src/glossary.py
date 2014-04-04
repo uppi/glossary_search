@@ -25,20 +25,16 @@ class Glossary(QObject):
             key = unicode(sheet.row_values(rownum)[key_col_num])
             data = unicode(sheet.row_values(rownum)[value_col_num])
             if not key and data:
-                key = "no_data_col_" + str(key_col_num) + "_row_" + str(value_col_num)
+                key = "no_data_col_" + str(key_col_num) + "_row_" + str(rownum)
             if key in self.dict and self.dict[key] != data:
-                key = key + "_col_" + str(key_col_num) + "_row_" + str(value_col_num)
+                key = key + "_col_" + str(key_col_num) + "_row_" + str(rownum)
             self.dict[key] = data
 
     def parse_xls(self, path):
         rb = xlrd.open_workbook(path)
         sheet = rb.sheet_by_index(0)
-        #hardcode
-        self.add_colpair(sheet, 3, 2)
-        self.add_colpair(sheet, 5, 4)
-        self.add_colpair(sheet, 7, 6)
-        self.add_colpair(sheet, 9, 8)
-        self.add_colpair(sheet, 11, 10)
+        for colnum in xrange(0, sheet.ncols ,2):
+            self.add_colpair(sheet, colnum + 1, colnum)
 
     def make_index(self):
         count = len(self.dict)
