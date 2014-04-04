@@ -106,59 +106,9 @@ class Form(QMainWindow):
             ready_text = text
             for i in xrange(len(matches)):
                 ready_text = ready_text.replace(matches[i], u"{{0}}".format(i), 1)
-            print "after first:", ready_text
             matches_hl = [u'<font style="background:green">' + m + u'</font>' for m in matches]
-            print matches_hl
             ready_text = unicode(ready_text).format(*matches_hl)
             self.inputTextEdit.setHtml(ready_text)
-            """
-            tohl = [(mo.start(0), mo.end(0)) for mo in matches if mo]
-            tohltxts = [text[m[0]:m[1]] for m in tohl]
-            hltxts = ['<font style="background:green">' + t + '</font>' for t in tohltxts]
-            all_parts = [(0, 0)] + tohl + [(-1, -1)]
-            simpletxts = []
-            for i in xrange(1, len(all_parts)):
-                simpletxts += [text[all_parts[i - 1][1]:all_parts[i][0]]]
-            ready_text = "".join([hltxts[i] + simpletxts[i] for i in xrange(0, len(hltxts))]) + simpletxts[-1]
-            print "tohl", tohl
-            print "tohltxts", tohltxts
-            print "hltxts", hltxts
-            print "all_parts", all_parts
-            print "simpletxts", simpletxts
-            print "ready_text", ready_text 
-            """
-            #regex = SearchMethod.make_regex(value_selected, True)
-            #mo = regex.search(text)
-            #if mo:
-            #    highlightedText = text[mo.start(0):mo.end(0)]
-            """
-            if highlightedText != value_selected:
-                print "not equal!"
-                ht = unicode(highlightedText).split()
-                vs = unicode(value_selected).split()
-                spaces = re.split('[^ ]+', highlightedText)
-                if len(ht) != len(vs):
-                    print "Life is hard."
-                elif len(spaces) != len(ht):
-                    print "Life is hard with spaces."
-                    print spaces
-                else:
-                    for i in xrange(0, len(ht)):
-                        if len(ht[i]) != len(vs[i]):
-                            print "len!"
-                            ht[i] += '<font style="background:red"> </font>'
-                        elif ht[i][-1] != vs[i][-1]:
-                            print "neq!"
-                            ht[i] = ht[i][:-1] + '<font style="background:red">' + ht[i][-1] + '</font>'
-                    for i in xrange(0, len(spaces)):
-                        ht[i] += spaces[i]
-                print "so the text is ready"
-                highlightedText = "".join(ht)
-            """
-            #    text = text[:mo.start(0)] + '<font style="background:green">' + highlightedText + '</font>' + text[mo.end(0):]
-            #    self.inputTextEdit.setHtml(text)
-            #else:
-            #    self.inputTextEdit.setPlainText(text)
         except Exception as e:
             traceback.print_exc()
             self.inputTextEdit.setPlainText(text)

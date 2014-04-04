@@ -52,7 +52,6 @@ class Glossary(QObject):
             try:
                 regex = SearchMethod.make_regex(value)
             except Exception as e:
-                print value, str(e)
                 errors += 1
                 pass
             if regex:

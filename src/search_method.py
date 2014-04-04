@@ -73,11 +73,9 @@ class MorphSearch(object):
                     try:
                         return re.compile(pattern)
                     except Exception as e:
-                        print "rich pattern:", pattern
                         traceback.print_exc()
                         return None
             except Exception as e:
-                print "prepared text:", prepared
                 traceback.print_exc()
                 return None
         return None
