@@ -1,1 +1,1 @@
-C:\Python27\Scripts\pyinstaller.exe -F -w --upx-dir="C:\upx391w" search.py
+C:\Python27\Scripts\pyinstaller.exe -F -w --upx-dir="C:\upx391w" gs\start.py

@@ -9,8 +9,8 @@ except:
     from PyQt5.QtWidgets import *
 import xlrd, re
 
-from form import Form
-from glossary import Glossary
+from gui import Form
+from search import Glossary
 
 def main():
     import sys, traceback

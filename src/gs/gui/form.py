@@ -8,7 +8,7 @@ except:
     from PyQt5.QtWidgets import *
 
 import traceback
-from search_method import MorphSearch as SearchMethod
+from search import MorphSearch as SearchMethod
 
 class Form(QMainWindow):
     def __init__(self, glossary, parent=None):

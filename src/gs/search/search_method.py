@@ -1,11 +1,5 @@
 # -*- coding: utf-8 -*-
 
-try:
-    from PyQt4.QtCore import *
-    from PyQt4.QtGui import *
-except:
-    from PyQt5.QtCore import *
-    from PyQt5.QtWidgets import *
 import traceback, re
 import korean
 
