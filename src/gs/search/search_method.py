@@ -33,11 +33,11 @@ class MorphSearch(object):
     ending_regexp = re.compile(ending_rxstring_fin)
 
     @staticmethod
-    def remove_endings(text):
-        return u" ".join([MorphSearch.remove_ending(word) for word in text.split()])
+    def stem_text(text):
+        return u" ".join([MorphSearch.stem_word(word) for word in text.split()])
 
     @staticmethod
-    def remove_ending(word):
+    def stem_word(word):
         word = word.replace("+", " ")
         word = word.replace(")", " ")
         word = word.replace("(", " ")
@@ -51,7 +51,7 @@ class MorphSearch(object):
 
     @staticmethod
     def prepare_text(text):
-        return MorphSearch.remove_endings(text)
+        return MorphSearch.stem_text(text)
 
     @staticmethod
     def make_regex(value, rich=False):
@@ -62,7 +62,7 @@ class MorphSearch(object):
                     return re.compile(prepared, re.U)
                 else:
                     value = unicode(value)
-                    words = [MorphSearch.remove_ending(word) + MorphSearch.ending_rxstring_rich for word in value.split()]
+                    words = [MorphSearch.stem_word(word) + MorphSearch.ending_rxstring_rich for word in value.split()]
                     pattern = u" +".join(words)
                     try:
                         return re.compile(pattern)
