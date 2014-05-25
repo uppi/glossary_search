@@ -10,12 +10,9 @@ except:
 import traceback
 
 class Form(QMainWindow):
-    def __init__(self, glossary, parent=None):
+    def __init__(self, parent=None):
         super(Form, self).__init__(parent)
-        self.glossary = glossary
-        self.glossary.statusMessageSent.connect(self.showStatusMessage)
         self.curPlainText = ""
-
         inputLabel = QLabel("Input:")
         self.inputTextEdit = QTextEdit()
         resultLabel = QLabel("Results:")
@@ -65,6 +62,8 @@ class Form(QMainWindow):
             pass
  
     def search(self):
+        if not hasattr(self, "glossary"):
+            return
         text = unicode(self.inputTextEdit.toPlainText())
         sr = self.glossary.search(text)
 
@@ -114,7 +113,7 @@ class Form(QMainWindow):
             traceback.print_exc()
             self.inputTextEdit.setPlainText(text)
 
-    def initStorage(self):
+    def initStorage(self, glossary):
         self.inputTextEdit.setDisabled(True);
         self.inputTextEdit.setPlainText("Initialization... ");
         fileName = './glossary_xls.xls'
@@ -128,6 +127,8 @@ class Form(QMainWindow):
         if isinstance(fileName, tuple):
             fileName = fileName[0]
         self.showStatusMessage("Parsing glossary file " + fileName)
+        self.glossary = glossary
+        self.glossary.statusMessageSent.connect(self.showStatusMessage)
         self.glossary.parse_xls(fileName)
         self.glossary.make_index()
         self.inputTextEdit.setPlainText("");
