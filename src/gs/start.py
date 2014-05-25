@@ -10,7 +10,7 @@ except:
 import xlrd, re
 
 from gui import Form
-from search import Glossary
+from search import Glossary, MorphSearch
 
 def main():
     import sys, traceback
@@ -18,7 +18,7 @@ def main():
     parent = QDialog()
  
     try:
-        glossary = Glossary()
+        glossary = Glossary(MorphSearch)
         form = Form(glossary)
         form.show()
         parent = form

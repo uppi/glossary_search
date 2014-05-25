@@ -8,7 +8,6 @@ except:
     from PyQt5.QtWidgets import *
 
 import traceback
-from search import MorphSearch as SearchMethod
 
 class Form(QMainWindow):
     def __init__(self, glossary, parent=None):
@@ -72,7 +71,7 @@ class Form(QMainWindow):
         self.foundMatchObjects = {}
         searchResult = []
         for key, value in sr.iteritems():
-            rich_regex = SearchMethod.make_regex(value, True)
+            rich_regex = self.glossary.search_method.make_regex(value, True)
 
             maxlen_val = ""
             if rich_regex:

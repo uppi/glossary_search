@@ -2,19 +2,17 @@
 
 try:
     from PyQt4.QtCore import *
-    from PyQt4.QtGui import *
 except:
     from PyQt5.QtCore import *
-    from PyQt5.QtWidgets import *
     
 import xlrd, re
-from search_method import MorphSearch as SearchMethod
 
 class Glossary(QObject):
     statusMessageSent = pyqtSignal(['QString'])
 
-    def __init__(self):
+    def __init__(self, search_method):
         super(Glossary, self).__init__()
+        self.search_method = search_method
         self.dict = {}
         self.regexdict = {}
 
@@ -25,7 +23,7 @@ class Glossary(QObject):
             data = unicode(sheet.row_values(rownum)[value_col_num])
             if not key and data:
                 key = u"no_data_col_" + str(key_col_num) + u"_row_" + str(rownum)
-            elif key in self.dict and SearchMethod.prepare_text(self.dict[key]) != SearchMethod.prepare_text(data):
+            elif key in self.dict and self.search_method.prepare_text(self.dict[key]) != self.search_method.prepare_text(data):
                 #print u"{0}: \n{1} != \n{2}".format(key, self.dict[key], data)
                 key = key + u"_col_" + str(key_col_num) + u"_row_" + str(rownum)
             self.dict[key] = data
@@ -45,7 +43,7 @@ class Glossary(QObject):
                 self.statusMessageSent.emit("Compiled {0} of {1} messages ({2}%)".format(done, count, (100 * done) / count))
             regex = None
             try:
-                regex = SearchMethod.make_regex(value)
+                regex = self.search_method.make_regex(value)
             except Exception as e:
                 errors += 1
                 pass
@@ -58,7 +56,7 @@ class Glossary(QObject):
 
     def search(self, text):
         result = {}
-        text = SearchMethod.prepare_text(text)
+        text = self.search_method.prepare_text(text)
         for key, regex in self.regexdict.iteritems():
             if regex.search(text):
                 result[key] = self.dict[key]
