@@ -7,6 +7,18 @@ except:
     
 import xlrd, re
 
+class Row(object):
+    def __init__(self, columns=None, main_col=1, key_col=0):
+        self.columns = columns
+        self.main_col = main_col
+        self.key_col = key_col
+
+    def key(self):
+        return self.columns[self.key_col]
+
+    def val(self):
+        return self.columns[self.main_col]
+
 class Glossary(QObject):
     statusMessageSent = pyqtSignal(['QString'])
 
@@ -23,10 +35,10 @@ class Glossary(QObject):
             data = unicode(sheet.row_values(rownum)[value_col_num])
             if not key and data:
                 key = u"no_data_col_" + str(key_col_num) + u"_row_" + str(rownum)
-            elif key in self.dict and self.search_method.prepare_text(self.dict[key]) != self.search_method.prepare_text(data):
+            elif key in self.dict and self.search_method.prepare_text(self.dict[key].val()) != self.search_method.prepare_text(data):
                 #print u"{0}: \n{1} != \n{2}".format(key, self.dict[key], data)
                 key = key + u"_col_" + str(key_col_num) + u"_row_" + str(rownum)
-            self.dict[key] = data
+            self.dict[key] = Row([key, data])
 
     def parse_xls(self, path):
         rb = xlrd.open_workbook(path)
@@ -43,7 +55,7 @@ class Glossary(QObject):
                 self.statusMessageSent.emit("Compiled {0} of {1} messages ({2}%)".format(done, count, (100 * done) / count))
             regex = None
             try:
-                regex = self.search_method.make_regex(value)
+                regex = self.search_method.make_regex(value.val())
             except Exception as e:
                 errors += 1
                 pass
@@ -55,9 +67,9 @@ class Glossary(QObject):
         self.statusMessageSent.emit("Done. Errors count: " + str(errors))
 
     def search(self, text):
-        result = {}
+        result = []
         text = self.search_method.prepare_text(text)
         for key, regex in self.regexdict.iteritems():
             if regex.search(text):
-                result[key] = self.dict[key]
+                result.append(self.dict[key])
         return result

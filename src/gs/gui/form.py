@@ -21,7 +21,7 @@ class Form(QMainWindow):
         self.resultTable.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.resultTable.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.resultTable.setHorizontalHeaderLabels(["Translation", "Foreign word", "Matched"])
-
+        self.searchResult = []
         mainSplitter = QSplitter(Qt.Vertical)
 
         splitterTop = QWidget()
@@ -66,31 +66,36 @@ class Form(QMainWindow):
             return
         text = unicode(self.inputTextEdit.toPlainText())
         sr = self.glossary.search(text)
+        if not sr:
+            self.searchResult = []
+            self.resultTable.setRowCount(0)
+            self.resultTable.setColumnCount(0)
+        else:
+            for i in xrange(len(sr)):
+                rich_regex = self.glossary.search_method.make_regex(sr[i].val(), True)
+                maxlen_val = ""
+                if rich_regex:
+                    sr[i].foundMatchObjects = [x.group(0) for x in rich_regex.finditer(text)]
+                    for x in sr[i].foundMatchObjects:
+                        if len(x) > len(maxlen_val):
+                            maxlen_val = x
+                else:
+                    print "regex failed"
+                    sr[i].foundMatchObjects = []
+                sr[i].maxlen_val = maxlen_val
+                #sr[i].columns.append(maxlen_val)
+                print i, "col", sr[i].columns
+            sr = sorted(sr, cmp = lambda x, y : len(y.maxlen_val) - len(x.maxlen_val))
+            self.searchResult = sr
+            self.resultTable.setRowCount(len(sr))
+            self.resultTable.setColumnCount(len(sr[0].columns) + 1)
+            self.resultTable.setHorizontalHeaderLabels(([""] * (len(sr[0].columns))) + ["Matched"])
+            for row in xrange(len(sr)):
+                for col in xrange(len(sr[row].columns)):
+                    self.resultTable.setItem(row, col, QTableWidgetItem(sr[row].columns[col]))
+                self.resultTable.setItem(row, len(sr[row].columns), QTableWidgetItem(sr[row].maxlen_val))
 
-        self.foundMatchObjects = {}
-        searchResult = []
-        for key, value in sr.iteritems():
-            rich_regex = self.glossary.search_method.make_regex(value, True)
-
-            maxlen_val = ""
-            if rich_regex:
-                self.foundMatchObjects[key] = [x.group(0) for x in rich_regex.finditer(text)]
-                for x in self.foundMatchObjects[key]:
-                    if len(x) > len(maxlen_val):
-                        maxlen_val = x
-            else:
-                print "regex failed"
-                self.foundMatchObjects[key] = []
-            searchResult += [(key, value, maxlen_val)]
-
-        searchResult = sorted(searchResult, cmp = lambda x, y : len(y[2]) - len(x[2]))
-
-        self.resultTable.setRowCount(len(searchResult))
-        for row in xrange(0, len(searchResult)):
-            self.resultTable.setItem(row, 0, QTableWidgetItem(searchResult[row][0]))
-            self.resultTable.setItem(row, 1, QTableWidgetItem(searchResult[row][1]))
-            self.resultTable.setItem(row, 2, QTableWidgetItem(searchResult[row][2]))
-        self.resultTable.resizeColumnsToContents()
+            self.resultTable.resizeColumnsToContents()
 
 
     def showStatusMessage(self, message):
@@ -98,20 +103,19 @@ class Form(QMainWindow):
         QApplication.processEvents()
 
     def highlight(self, cur, prev):
-        key_selected = unicode(self.resultTable.item(self.resultTable.currentRow(), 0).text())
-        value_selected = unicode(self.resultTable.item(self.resultTable.currentRow(), 1).text())
-        text = unicode(self.inputTextEdit.toPlainText())
-        try:
-            matches = self.foundMatchObjects[key_selected]
-            ready_text = text
-            for i in xrange(len(matches)):
-                ready_text = ready_text.replace(matches[i], u"{{0}}".format(i), 1)
-            matches_hl = [u'<font style="background:green">' + m + u'</font>' for m in matches]
-            ready_text = unicode(ready_text).format(*matches_hl)
-            self.inputTextEdit.setHtml(ready_text)
-        except Exception as e:
-            traceback.print_exc()
-            self.inputTextEdit.setPlainText(text)
+        if self.searchResult:
+            matches = self.searchResult[self.resultTable.currentRow()].foundMatchObjects
+            text = unicode(self.inputTextEdit.toPlainText())
+            try:
+                ready_text = text
+                for i in xrange(len(matches)):
+                    ready_text = ready_text.replace(matches[i], u"{{0}}".format(i), 1)
+                matches_hl = [u'<font style="background:green">' + m + u'</font>' for m in matches]
+                ready_text = unicode(ready_text).format(*matches_hl)
+                self.inputTextEdit.setHtml(ready_text)
+            except Exception as e:
+                traceback.print_exc()
+                self.inputTextEdit.setPlainText(text)
 
     def initStorage(self, glossary):
         self.inputTextEdit.setDisabled(True);
