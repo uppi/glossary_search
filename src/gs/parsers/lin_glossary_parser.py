@@ -34,22 +34,3 @@ class LineageGlossaryParser(XlsParser):
                     self.dict[key] = data
                     result = Row([key, data])
                     return result
-
-"""
-    def add_colpair(self, sheet, key_col_num, value_col_num):
-        self.statusMessageSent.emit("Adding {0} {1}".format(key_col_num, value_col_num))
-        for rownum in range(1, sheet.nrows):
-            key = unicode(sheet.row_values(rownum)[key_col_num])
-            data = unicode(sheet.row_values(rownum)[value_col_num])
-            if not key and data:
-                key = u"no_data_col_" + str(key_col_num) + u"_row_" + str(rownum)
-            elif key in self.dict and self.search_method.prepare_text(self.dict[key].val()) != self.search_method.prepare_text(data):
-                key = key + u"_col_" + str(key_col_num) + u"_row_" + str(rownum)
-            self.dict[key] = Row([key, data])
-
-    def parse_xls(self, path):
-        rb = xlrd.open_workbook(path)
-        sheet = rb.sheet_by_index(0)
-        for colnum in xrange(0, sheet.ncols ,2):
-            self.add_colpair(sheet, colnum + 1, colnum)
-"""

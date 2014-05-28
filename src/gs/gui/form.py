@@ -83,8 +83,6 @@ class Form(QMainWindow):
                     print "regex failed"
                     sr[i].foundMatchObjects = []
                 sr[i].maxlen_val = maxlen_val
-                #sr[i].columns.append(maxlen_val)
-                print i, "col", sr[i].columns
             sr = sorted(sr, cmp = lambda x, y : len(y.maxlen_val) - len(x.maxlen_val))
             self.searchResult = sr
             self.resultTable.setRowCount(len(sr))
@@ -120,16 +118,17 @@ class Form(QMainWindow):
     def initStorage(self, glossary):
         self.inputTextEdit.setDisabled(True);
         self.inputTextEdit.setPlainText("Initialization... ");
-        fileName = './glossary_xls.xls'
+        fileName = u'./glossary_xls.xls'
         try:
             with open(fileName, "r") as f:
                 pass
         except:
-            fileName = QFileDialog.getOpenFileName(self, "Open glossary", ".", "glossary (*.xls *.xlsx)");
+            fileName = QFileDialog.getOpenFileName(self, u"Open glossary", u".", u"glossary (*.xls *.xlsx)");
         if not fileName:
             raise Exception("You need to choose glossary file")
         if isinstance(fileName, tuple):
             fileName = fileName[0]
+        fileName = unicode(fileName)
         self.showStatusMessage("Parsing glossary file " + fileName)
         self.glossary = glossary
         self.glossary.statusMessageSent.connect(self.showStatusMessage)
