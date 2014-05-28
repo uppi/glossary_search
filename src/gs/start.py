@@ -11,8 +11,6 @@ import xlrd, re
 
 from gui import Form
 from glossary import Glossary
-from methods import MorphSearch
-from languages import endings
 
 def main():
     import sys, traceback
@@ -22,7 +20,7 @@ def main():
         form = Form()
         form.show()
         parent = form
-        form.initStorage(Glossary(MorphSearch(endings["korean"])))
+        form.initStorage(Glossary())
         sys.exit(app.exec_())
     except Exception as e:
         QMessageBox.critical(parent, "Error", traceback.format_exc())

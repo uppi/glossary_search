@@ -133,7 +133,7 @@ class Form(QMainWindow):
         self.showStatusMessage("Parsing glossary file " + fileName)
         self.glossary = glossary
         self.glossary.statusMessageSent.connect(self.showStatusMessage)
-        self.glossary.parse_xls(fileName)
+        self.glossary.parse(fileName)
         self.glossary.make_index()
         self.inputTextEdit.setPlainText("");
         self.inputTextEdit.setDisabled(False);
