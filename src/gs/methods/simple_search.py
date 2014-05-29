@@ -7,13 +7,11 @@ class SimpleSearch(SearchMethod):
 
     @staticmethod
     def __make_one_word_regex_part(word, rich=False):
-        result = "(?:(?:^)|[ .+-])" + re.escape(word)
-        if len(word) != 1:
-            result += "?"
+        result = re.escape(word)
         if rich:
-            return "(" + result + "[^ ]?" + ")"
+            return "(" + result + ")"
         else:
-            return result + "[^ ]?"
+            return result
 
     def make_regex(self, value, rich=False):
         value = unicode(value)

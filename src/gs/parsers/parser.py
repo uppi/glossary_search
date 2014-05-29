@@ -28,6 +28,9 @@ class Parser(object):
     @staticmethod
     def get(filePath):
         from lin_glossary_parser import LineageGlossaryParser
+        from dp_glossary_parser import DPGlossaryParser
+        if filePath.find("DP_Glossary") != -1:
+            return DPGlossaryParser(filePath)
         return LineageGlossaryParser(filePath)
 
 class XlsParser(Parser):

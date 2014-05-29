@@ -18,7 +18,7 @@ class Form(QMainWindow):
         resultLabel = QLabel("Results:")
         self.resultTable = QTableWidget()
         self.resultTable.setColumnCount(3)
-        self.resultTable.setSelectionBehavior(QAbstractItemView.SelectRows)
+        #self.resultTable.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.resultTable.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.resultTable.setHorizontalHeaderLabels(["Translation", "Foreign word", "Matched"])
         self.searchResult = []
@@ -116,14 +116,14 @@ class Form(QMainWindow):
                 self.inputTextEdit.setPlainText(text)
 
     def initStorage(self, glossary):
-        self.inputTextEdit.setDisabled(True);
-        self.inputTextEdit.setPlainText("Initialization... ");
+        self.inputTextEdit.setDisabled(True)
+        self.inputTextEdit.setPlainText("Initialization... ")
         fileName = u'./glossary_xls.xls'
         try:
             with open(fileName, "r") as f:
                 pass
         except:
-            fileName = QFileDialog.getOpenFileName(self, u"Open glossary", u".", u"glossary (*.xls *.xlsx)");
+            fileName = QFileDialog.getOpenFileName(self, u"Open glossary", u".", u"glossary (*.xls *.xlsx)")
         if not fileName:
             raise Exception("You need to choose glossary file")
         if isinstance(fileName, tuple):
@@ -134,5 +134,5 @@ class Form(QMainWindow):
         self.glossary.statusMessageSent.connect(self.showStatusMessage)
         self.glossary.parse(fileName)
         self.glossary.make_index()
-        self.inputTextEdit.setPlainText("");
-        self.inputTextEdit.setDisabled(False);
+        self.inputTextEdit.setPlainText("")
+        self.inputTextEdit.setDisabled(False)
