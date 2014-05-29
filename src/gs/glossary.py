@@ -39,7 +39,6 @@ class Glossary(QObject):
                 print e
                 pass
             if not regex:
-                print "No regex for", self.rows[i].val()
                 self.errors += 1
             self.rows[i].regex = regex
             done += 1

@@ -11,7 +11,6 @@ class MorphSearch(SearchMethod):
         return u" ".join([self.__stem_word(word) for word in text.split()])
 
     def __stem_word(self, word):
-        print word
         word = word.replace("+", " ")
         word = word.replace(")", " ")
         word = word.replace("(", " ")
