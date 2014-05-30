@@ -35,13 +35,8 @@ class MorphSearch(SearchMethod):
                     value = unicode(value)
                     words = [self.__stem_word(word) + self.ending_rxstring_rich for word in value.split()]
                     pattern = u" +".join(words)
-                    try:
-                        return re.compile(pattern)
-                    except Exception as e:
-                        traceback.print_exc()
-                        return None
-            except Exception as e:
+                    return re.compile(pattern)
+            except Exception:
                 traceback.print_exc()
                 return None
-        print "not prepared:( "
         return None

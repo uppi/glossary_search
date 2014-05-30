@@ -1,5 +1,5 @@
 from parser import XlsParser, Row
-from languages.korean import noun_endings
+from languages.korean import NOUN_ENDINGS
 from methods.morph_search import MorphSearch
 
 class LineageGlossaryParser(XlsParser):
@@ -10,7 +10,7 @@ class LineageGlossaryParser(XlsParser):
         self.rownum = 1
         self.currentGen = None
         self.dict = {}
-        self.search_method = MorphSearch(noun_endings)
+        self.search_method = MorphSearch(NOUN_ENDINGS)
 
     def position(self):
         return u"col_" + unicode(self.colnum) + u"_row_" + unicode(self.rownum)

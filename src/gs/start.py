@@ -4,10 +4,9 @@
 try:
     from PyQt4.QtCore import *
     from PyQt4.QtGui import *
-except:
+except ImportError:
     from PyQt5.QtCore import *
     from PyQt5.QtWidgets import *
-import xlrd, re
 
 from gui import Form
 from glossary import Glossary
@@ -20,10 +19,10 @@ def main():
         form = Form()
         form.show()
         parent = form
-        form.initStorage(Glossary())
+        form.init_storage(Glossary())
         sys.exit(app.exec_())
-    except Exception as e:
-        QMessageBox.critical(parent, "Error", traceback.format_exc())
+    except Exception:
+        QMessageBox.critical(parent, "Error (please send a report!)", traceback.format_exc())
         sys.exit(app.quit())
 
 if __name__ == '__main__':
