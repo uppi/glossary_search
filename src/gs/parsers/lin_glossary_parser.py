@@ -5,10 +5,9 @@ from methods.morph_search import MorphSearch
 class LineageGlossaryParser(XlsParser):
     def __init__(self, fileName):
         XlsParser.__init__(self, fileName)
-        self.sheet = self.wb.sheet_by_index(0)
+        self.sheet = self.workbook.sheet_by_index(0)
         self.colnum = 0
         self.rownum = 1
-        self.currentGen = None
         self.dict = {}
         self.search_method = MorphSearch(NOUN_ENDINGS)
 
@@ -16,7 +15,7 @@ class LineageGlossaryParser(XlsParser):
         return u"col_" + unicode(self.colnum) + u"_row_" + unicode(self.rownum)
 
     def next(self):
-        while(True):
+        while True:
             if self.colnum >= self.sheet.ncols:
                 return None
             elif self.rownum >= self.sheet.nrows:

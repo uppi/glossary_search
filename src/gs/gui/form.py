@@ -82,7 +82,8 @@ class Form(QMainWindow):
                     print "regex failed"
                     res[i].found_match_objects = []
                 res[i].maxlen_val = maxlen_val
-            res = sorted(res, key=operator.attrgetter("maxlen_val"))
+                res[i].maxlen = len(maxlen_val)
+            res = list(reversed(sorted(res, key=operator.attrgetter("maxlen"))))
             self.search_result = res
             self.result_table.setRowCount(len(res))
             self.result_table.setColumnCount(len(res[0].columns) + 1)
@@ -99,7 +100,7 @@ class Form(QMainWindow):
         self.statusBar().showMessage(message)
         QApplication.processEvents()
 
-    def highlight(self, cur, prev):
+    def highlight(self):
         if self.search_result:
             matches = self.search_result[self.result_table.currentRow()].found_match_objects
             text = unicode(self.input_text_edit.toPlainText())

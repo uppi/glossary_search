@@ -16,11 +16,11 @@ class MorphSearch(SearchMethod):
         word = word.replace("(", " ")
         word = word.replace("*", " ")
         word = word.replace(".", " ")
-        mo = self.ending_regexp.search(word)
-        if not mo:
+        match = self.ending_regexp.search(word)
+        if not match:
             return word
         else:
-            return word[:-(len(mo.group(0)))]
+            return word[:-(len(match.group(0)))]
 
     def prepare_text(self, text):
         return self.__stem_text(text)
@@ -36,7 +36,7 @@ class MorphSearch(SearchMethod):
                     words = [self.__stem_word(word) + self.ending_rxstring_rich for word in value.split()]
                     pattern = u" +".join(words)
                     return re.compile(pattern)
-            except Exception:
+            except re.error:
                 traceback.print_exc()
                 return None
         return None

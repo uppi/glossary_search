@@ -26,14 +26,14 @@ class Parser(object):
         return 0
 
     @staticmethod
-    def get(filePath):
+    def get(file_path):
         from lin_glossary_parser import LineageGlossaryParser
         from dp_glossary_parser import DPGlossaryParser
-        if filePath.find("DP_Glossary") != -1:
-            return DPGlossaryParser(filePath)
-        return LineageGlossaryParser(filePath)
+        if file_path.find("DP_Glossary") != -1:
+            return DPGlossaryParser(file_path)
+        return LineageGlossaryParser(file_path)
 
 class XlsParser(Parser):
-    def __init__(self, filePath):
+    def __init__(self, file_path):
         Parser.__init__(self)
-        self.wb = xlrd.open_workbook(filePath)
+        self.workbook = xlrd.open_workbook(file_path)
